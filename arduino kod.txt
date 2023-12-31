@@ -1,0 +1,72 @@
+#include <SoftwareSerial.h>
+#define trigPin1 2
+#define echoPin1 3
+#define trigPin2 4
+#define echoPin2 5
+#define trigPin3 6
+#define echoPin3 7
+#define trigPin4 8
+#define echoPin4 9
+//BU PROJEDE RX PİNİ 1.PİNE,TX PİNİ İSE 0. PİNE TAKILMAKTADIR.
+//BT KULLANICI ADI "BT HM-10" DUR
+SoftwareSerial BTSerial(10, 11); // RX, TX için 10 ve 11 pinleri
+void setup() {
+  Serial.begin(9600);
+  BTSerial.begin(9600);     // HM-10 ile iletişim hızı
+  pinMode(trigPin1, OUTPUT);
+  pinMode(echoPin1, INPUT);
+  pinMode(trigPin2, OUTPUT);
+  pinMode(echoPin2, INPUT);
+  pinMode(trigPin3, OUTPUT);
+  pinMode(echoPin3, INPUT);
+  pinMode(trigPin4, OUTPUT);
+  pinMode(echoPin4, INPUT);
+  // HM-10 modülünün kullanıcı adını değiştirmek için AT komutları kullanın
+  BTSerial.println("AT+NAMEBT HM-10"); // "YENIAD" kısmını yeni kullanıcı adıyla değiştirin
+  delay(1000); // Komutları gönderdikten sonra bir süre bekleyin
+}
+void loop() {
+  long sure1, mesafe1, sure2, mesafe2, sure3, mesafe3, sure4, mesafe4;
+
+  // Mesafe 1
+  digitalWrite(trigPin1, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin1, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin1, LOW);
+  sure1 = pulseIn(echoPin1, HIGH);
+  mesafe1 = sure1 * 0.034 / 2;
+
+  // Mesafe 2
+  digitalWrite(trigPin2, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin2, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin2, LOW);
+  sure2 = pulseIn(echoPin2, HIGH);
+  mesafe2 = sure2 * 0.034 / 2;
+
+  // Mesafe 3
+  digitalWrite(trigPin3, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin3, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin3, LOW);
+  sure3 = pulseIn(echoPin3, HIGH);
+  mesafe3 = sure3 * 0.034 / 2;
+
+  // Mesafe 4
+  digitalWrite(trigPin4, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin4, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin4, LOW);
+  sure4 = pulseIn(echoPin4, HIGH);
+  mesafe4 = sure4 * 0.034 / 2;
+
+  // Verileri Serial Monitor ve Bluetooth üzerinden gönder
+  String dataString = String(mesafe1) + "," + String(mesafe2) + "," + String(mesafe3) + "," + String(mesafe4);
+  Serial.println(dataString);
+  BTSerial.println(dataString);
+  delay(500); // Yarım saniye bekle
+}
